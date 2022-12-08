@@ -29,7 +29,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<Post> getPosts() {
 
-        return postRepository.findAllByOrderByModifiedAtDesc();
+        return postRepository.findAllByOrderByModifiedDateDesc();
     }
 
     //선택한 게시글 조회

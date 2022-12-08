@@ -33,8 +33,6 @@ public class Post extends Timestamped{
         this.author = requestDto.getAuthor();
         this.content = requestDto.getContent();
         this.password = requestDto.getPassword();
-//        super.createdAt = requestDto.getCreatedAt();
-//        super.modifiedAt = requestDto.getModifiedAt();
     }
 
     public void update(PostRequestDto requestDto) {
