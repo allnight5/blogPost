@@ -3,6 +3,7 @@ package com.sparta.bolgpost.controller;
 import com.sparta.bolgpost.dto.DeleteResponseDto;
 import com.sparta.bolgpost.dto.PostRequestDto;
 import com.sparta.bolgpost.dto.PostResponseDto;
+import com.sparta.bolgpost.dto.ResponseDto;
 import com.sparta.bolgpost.entity.Post;
 import com.sparta.bolgpost.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class PostController {
 
     // 2. 게시글 전체 목록 조회
     @GetMapping("/post")
-    public List<Post> getPostList() {
+    public ResponseDto<List<Post>> getPostList() {
         return postService.getPosts();
     }
 
@@ -37,7 +38,7 @@ public class PostController {
 
     //4. 선택한 게시글 수정
     @PutMapping("/post/{id}")
-    public PostResponseDto updateMemo(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
+    public ResponseDto<PostResponseDto> updateMemo(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
         return postService.update(id, requestDto);
     }
 

@@ -3,14 +3,18 @@ package com.sparta.bolgpost.service;
 import com.sparta.bolgpost.dto.DeleteResponseDto;
 import com.sparta.bolgpost.dto.PostRequestDto;
 import com.sparta.bolgpost.dto.PostResponseDto;
+import com.sparta.bolgpost.dto.ResponseDto;
 import com.sparta.bolgpost.entity.Post;
+import com.sparta.bolgpost.enums.ErrorCode;
 import com.sparta.bolgpost.repository.PostRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
 
 @Service
 @Getter
@@ -27,9 +31,15 @@ public class PostService {
     }
     //게시글 전체 목록 조회
     @Transactional(readOnly = true)
-    public List<Post> getPosts() {
-
-        return postRepository.findAllByOrderByModifiedDateDesc();
+    public ResponseDto<List<Post>> getPosts() {
+        List<Post> data;
+        try {
+            data = postRepository.findAllByOrderByModifiedDateDesc();
+        }catch (Exception e) {
+            return new ResponseDto<>(false,null, ErrorCode.ENTITY_NOT_FOUND);
+        }
+        return new ResponseDto<>(true, data);
+        //return postRepository.findAllByOrderByModifiedDateDesc();
     }
 
     //선택한 게시글 조회
@@ -43,14 +53,26 @@ public class PostService {
 
     //선택한 게시글 수정
     @Transactional
-    public PostResponseDto update(Long id, PostRequestDto requestDto) {
-        Post post = postRepository.findById(id).orElseThrow(
+    public ResponseDto<PostResponseDto> update(Long id, PostRequestDto requestDto) {
+        Post post = null;
+        post = postRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
         );
-        boolean result = requestDto.getPassword().equals(post.getPassword());
-
+//        try {
+//            post = postRepository.findById(id).orElseThrow(
+//                    () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+//            );
+//            boolean result = requestDto.getPassword().equals(post.getPassword());
+//            if(!result){
+//                throw new HttpMessageConversionException("비밀번호가 틀렸습니다.");
+//            }
+//        }catch (IllegalArgumentException e){
+//            log.error(e.getMessage());
+//        }catch (HttpMessageConversionException e){
+//            return new ResponseDto<>(false, null, ErrorCode.PASSWORD_FALSE);
+//        }
         post.update(requestDto);
-        return new PostResponseDto(post);
+        return new ResponseDto<>(true, new PostResponseDto(post));
     }
     //선택한 게시글 삭제
     @Transactional
