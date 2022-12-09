@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 public class PostRequestDto{
     private String title;
     private String content;
-    private String author;
-    private String password;
-
+//    private String author;
+//    private String password;
 }

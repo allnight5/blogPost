@@ -11,7 +11,6 @@ import jakarta.persistence.*;
 @Getter
 @NoArgsConstructor
 public class Post extends Timestamped{
-//    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -20,7 +19,7 @@ public class Post extends Timestamped{
     private String title;
 
     @Column(nullable = false)
-    private String author;
+    private String username;
 
     @Column(nullable = false)
     private String content;
@@ -28,17 +27,21 @@ public class Post extends Timestamped{
     @Column(nullable = false)
     private String password;
 
-    public Post(PostRequestDto requestDto) {
+    @Column(nullable = false)
+    private Long userId;
+    public Post(PostRequestDto requestDto, String username, String password, Long userId) {
         this.title = requestDto.getTitle();
-        this.author = requestDto.getAuthor();
         this.content = requestDto.getContent();
-        this.password = requestDto.getPassword();
+        this.username = username;
+        this.password = password;
+        this.userId = userId;
     }
 
-    public void update(PostRequestDto requestDto) {
+    public void update(PostRequestDto requestDto, String username, String password, Long userId) {
         this.title = requestDto.getTitle();
-        this.author = requestDto.getAuthor();
         this.content = requestDto.getContent();
-        this.password = requestDto.getPassword();
+        this.username = username;
+        this.password = password;
+        this.userId = userId;
     }
 }

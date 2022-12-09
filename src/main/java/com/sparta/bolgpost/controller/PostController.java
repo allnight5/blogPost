@@ -1,14 +1,14 @@
 package com.sparta.bolgpost.controller;
 
-import com.sparta.bolgpost.dto.DeleteResponseDto;
-import com.sparta.bolgpost.dto.PostRequestDto;
-import com.sparta.bolgpost.dto.PostResponseDto;
+import com.sparta.bolgpost.dto.*;
 import com.sparta.bolgpost.entity.Post;
 import com.sparta.bolgpost.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,33 +17,36 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
 
-    //1. 게시글 생성
+    //1. 게시글 생성 API
     @PostMapping("/post")
-    public Post createMemo(@RequestBody PostRequestDto requestDto) {
-        return postService.createPost(requestDto);
+    public PostResponseDto createMemo(@RequestBody PostRequestDto requestDto, HttpServletRequest request) {
+
+        return postService.createPost(requestDto, request);
+
     }
 
-    // 2. 게시글 전체 목록 조회
+    // 2. 게시글 전체 목록 조회 API
     @GetMapping("/post")
-    public List<Post> getPostList() {
+    public ResponseDto<List<Post>> getPostList() {
+
         return postService.getPosts();
     }
 
-    // 3. 선택한 게시글 조회
+    // 3. 선택한 게시글 조회 API
     @GetMapping("/post/{id}")
-    public PostResponseDto getPost(@PathVariable Long id) {
+    public ResponseDto<PostResponseDto> getPost(@PathVariable Long id) {
         return postService.getPost(id);
     }
 
-    //4. 선택한 게시글 수정
+    //4. 선택한 게시글 수정 API
     @PutMapping("/post/{id}")
-    public PostResponseDto updateMemo(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
-        return postService.update(id, requestDto);
+    public ResponseDto<PostResponseDto> updateMemo(@PathVariable Long id, @RequestBody PostRequestDto requestDto, HttpServletRequest request) {
+        return postService.update(id, requestDto, request);
     }
 
-    //선택한 게시글 삭제
+    //선택한 게시글 삭제 API
     @DeleteMapping("/post/{id}")
-    public DeleteResponseDto deleteMemo(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
-        return postService.delete(id, requestDto);
+    public MsgResponseDto deleteMemo(@PathVariable Long id, HttpServletRequest request) {
+        return postService.delete(id, request);
     }
 }
