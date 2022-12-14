@@ -24,9 +24,16 @@ spring 입문주차 과제
     - 선택한 게시글을 삭제하고 Client 로 성공했다는 표시 반환하기
 
 
----
-# API 명세서 예시
-
+API 명세서
+---  
+| 기능 | API URL | Method | Request Header | Request | Response | Response header |
+|---|---|---|---|---|---|---|
+| 회원가입 | /api/signup | POST |  | {<br> "username": "test1122",<br> "password": "Test12345",<br> } | {<br> "msg": "회원가입 완료",<br>"statusCode": 200<br> } | 
+로그인 | /api/login | POS |  | {<br>"username": "test1122",<br>"password": "Test12345"<br>} | {<br>"msg": "로그인 성공",<br>"statusCode": 200 } | Authorization:Bearer <br>eyJhbGciOiJIUzI1NiJ9<br>.eyJzdWIiOiJ0amd1cnRuMSIsImF1<br>dGgiOiJVU0VSIiwiZXhwIjoxNjcwND<br>g0OTk0LCJpYXQiOjE2NzA0ODEzO<br>TR9.xwyHOpdM2Zgld1tJHGmrtVvJj<br>JRWcOF6OJM9j_f57WE | 
+| 게시글 작성 | /api/boards | POST |Authorization:Bearer <br>eyJhbGciOiJIUzI1NiJ9<br>.eyJzdWIiOiJ0amd1cnRuMSIsImF1<br>dGgiOiJVU0VSIiwiZXhwIjoxNjcwND<br>g0OTk0LCJpYXQiOjE2NzA0ODEzO<br>TR9.xwyHOpdM2Zgld1tJHGmrtVvJj<br>JRWcOF6OJM9j_f57WE | {<br>"boardName": "글 제목",<br>"contents": "글 내용"<br>} | {<br>"createdAt": "2022-12-08T15:49:11.5919215",<br>"modifiedAt": "2022-12-08T15:49:11.5919215",<br>"id": 1,<br>"boardName": "글 제목",<br>"username": "test1122",<br>"contents": "글 내용"<br>} 
+| 게시글 목록 조회 | /api/boards | POST | {<br>"createdAt": "2022-12-08T15:49:11.5919215",<br>"modifiedAt": "2022-12-08T15:49:11.5919215",<br>"id": 1,<br>"boardName": "글 제목",<br>"username": "test1122",<br>"contents": "글 내용"<br>}<br>{<br>"createdAt": "2022-12-08T15:49:11.5919215",<br>"modifiedAt": "2022-12-08T15:49:11.5919215",<br>"id": 2,<br>"boardName": "글 제목",<br>"username": "test1122",<br>"contents": "글 내용"<br>}
+| 게시글 수정 | /api/boards | PUT | Authorization:Bearer <br>eyJhbGciOiJIUzI1NiJ9<br>.eyJzdWIiOiJ0amd1cnRuMSIsImF1<br>dGgiOiJVU0VSIiwiZXhwIjoxNjcwND<br>g0OTk0LCJpYXQiOjE2NzA0ODEzO<br>TR9.xwyHOpdM2Zgld1tJHGmrtVvJj<br>JRWcOF6OJM9j_f57WE | {<br>"boardName": "제목 수정",<br>"contents": "내용 수정"<br>} | {<br>"createdAt": "2022-12-08T15:49:11.5919215",<br>"modifiedAt": "2022-12-08T15:49:11.5919215",<br>"id": 1,<br>"boardName": "제목 수정",<br>"username": "test1122",<br>"contents": "내용 수정"<br>}
+| 게시글 수정 | /api/boards | DELETE | Authorization:Bearer <br>eyJhbGciOiJIUzI1NiJ9<br>.eyJzdWIiOiJ0amd1cnRuMSIsImF1<br>dGgiOiJVU0VSIiwiZXhwIjoxNjcwND<br>g0OTk0LCJpYXQiOjE2NzA0ODEzO<br>TR9.xwyHOpdM2Zgld1tJHGmrtVvJj<br>JRWcOF6OJM9j_f57WE | | {<br>"msg": "게시글 삭제 성공",<br>"statusCode": 200<br>}|
 
 ---
 Why: 과제 제출시에는 아래 질문을 고민해보고 답변을 함께 제출해주세요.
