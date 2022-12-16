@@ -19,7 +19,7 @@ public class PostController {
 
     //1. 게시글 생성 API
     @PostMapping("/post")
-    public PostResponseDto createMemo(@RequestBody PostRequestDto requestDto, HttpServletRequest request) {
+    public PostResponseDto createPost(@RequestBody PostRequestDto requestDto, HttpServletRequest request) {
 
         return postService.createPost(requestDto, request);
 
@@ -40,13 +40,13 @@ public class PostController {
 
     //4. 선택한 게시글 수정 API
     @PutMapping("/post/{id}")
-    public ResponseDto<PostResponseDto> updateMemo(@PathVariable Long id, @RequestBody PostRequestDto requestDto, HttpServletRequest request) {
+    public ResponseDto<PostResponseDto> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto, HttpServletRequest request) {
         return postService.update(id, requestDto, request);
     }
 
     //선택한 게시글 삭제 API
     @DeleteMapping("/post/{id}")
-    public MsgResponseDto deleteMemo(@PathVariable Long id, HttpServletRequest request) {
+    public MsgResponseDto deletePost(@PathVariable Long id, HttpServletRequest request) {
         return postService.delete(id, request);
     }
 }

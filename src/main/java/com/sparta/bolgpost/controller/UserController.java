@@ -20,7 +20,7 @@ public class UserController {
 
     private final UserService userService;
     @GetMapping("/login")
-    public ModelAndView loginpage() {
+    public ModelAndView loginPage() {
         return new ModelAndView("login");
     }
 
