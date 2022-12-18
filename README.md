@@ -151,7 +151,7 @@ spring 입문주차 과제
 <details>
     <summary>ERD설계</summary>
     
-![ERD 2](https://user-images.githubusercontent.com/45612782/208323550-6fd3dca6-d175-4d24-b2e9-1ec891ec7059.JPG)
+![ERD 2](https://user-images.githubusercontent.com/45612782/208323717-0abd682c-e25c-424e-9976-e1b1dcc778f3.JPG)
 
 
 </details>
