@@ -120,6 +120,7 @@ spring 입문주차 과제
         - 로그인 시, 전달된 username과 password 중 맞지 않는 정보가 있다면 "회원을 찾을 수 없습니다."라는 에러메시지와 statusCode: 400을 Client에 반환하기
     
 </details>
+
 <details>
     <summary>숙련2 요구사항에 따른 API</summary>
     
@@ -145,6 +146,14 @@ spring 입문주차 과제
         - ~~삭제를 요청할 때 비밀번호를 같이 보내서 서버에서 비밀번호 일치 여부를 확인 한 후~~
         - 토큰을 검사한 후, 유효한 토큰이면서 해당 사용자가 작성한 게시글만 삭제 가능
         - 선택한 게시글을 삭제하고 Client 로 성공했다는 메시지, 상태코드 반환하기
+</details>
+
+<details>
+    <summary>ERD설계</summary>
+    
+![ERD 2](https://user-images.githubusercontent.com/45612782/208323550-6fd3dca6-d175-4d24-b2e9-1ec891ec7059.JPG)
+
+
 </details>
 
 # api명세서(숙련)
