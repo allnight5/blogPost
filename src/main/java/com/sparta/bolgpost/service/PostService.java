@@ -29,29 +29,18 @@ public class PostService {
 
     private final CommentRepository commentRepository;
     private final JwtUtil jwtUtil;
-    private MessageResponseDto msg;
 
     //게시글 생성
     @Transactional
-    public ResponseDto<PostResponseDto> createPost(PostRequestDto requestDto, HttpServletRequest request) {
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-        if(token != null){
-            if(jwtUtil.validateToken(token)){
-                claims = jwtUtil.getUserInfoFromToken(token);
-            }else {
-                return new ResponseDto<>("토큰이 정확하지 않습니다...", 400);
-            }
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("사용자 정보가 존재하지 않습니다."));
-
-            Post post = new Post(requestDto, user.getUsername());
-            post.addUser(user);
-            postRepository.save(post);
-            return new ResponseDto<>(new PostResponseDto(post));
-        }else {
-            return new ResponseDto<>("토큰이 정확하지 않습니다...", 400);
+    public ResponseDto<PostResponseDto> createPost(PostRequestDto requestDto, Claims claims) {
+        Optional<User> user = userRepository.findByUsername(claims.getSubject());
+        if(user.isEmpty()){
+            return new ResponseDto<>("사용자가 존재하지 않습니다..", 400);
         }
+        Post post = new Post(requestDto, user.get().getUsername());
+        post.addUser(user.get());
+        postRepository.save(post);
+        return new ResponseDto<>(new PostResponseDto(post));
     }
     //게시글 전체 목록 조회
     @Transactional(readOnly = true)

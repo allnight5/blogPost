@@ -1,7 +1,9 @@
 package com.sparta.bolgpost.controller;
 
 import com.sparta.bolgpost.dto.*;
+import com.sparta.bolgpost.jwt.JwtUtil;
 import com.sparta.bolgpost.service.PostService;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,12 +16,25 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestMapping("/api")
 public class PostController {
     private final PostService postService;
+    private final JwtUtil jwtUtil;
 
     //1. 게시글 생성 API
     @ResponseBody
     @PostMapping("/post")
     public ResponseDto<PostResponseDto> createPost(@RequestBody PostRequestDto requestDto, HttpServletRequest request) {
-        return postService.createPost(requestDto, request);
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+
+        if(token != null) {
+            if (jwtUtil.validateToken(token)) {
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                return new ResponseDto<>("토큰이 정확하지 않습니다...", 400);
+            }
+        }else {
+            return new ResponseDto<>("토큰이 정확하지 않습니다...", 400);
+        }
+        return postService.createPost(requestDto, claims);
     }
 
     // 2. 게시글 전체 목록 조회 API
