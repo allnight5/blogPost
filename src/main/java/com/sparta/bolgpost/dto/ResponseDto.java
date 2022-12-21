@@ -10,27 +10,27 @@ import lombok.NoArgsConstructor;
 public class ResponseDto<T> {
     private String message;
 
-    private boolean success;
+//    private boolean success;
     T data;
     private int statusCode;
-    Error error;
+//    Error error;
     public ResponseDto(String message, int statusCode){
         this.message = message;
         this.statusCode = statusCode;
     }
-    public ResponseDto(String message, int statusCode, T data){
-        this.message = message;
-        this.statusCode = statusCode;
-        this.data = data;
-    }
+//    public ResponseDto(String message, int statusCode, T data){
+//        this.message = message;
+//        this.statusCode = statusCode;
+//        this.data = data;
+//    }
     public ResponseDto(T data){
         this.data = data;
     }
-    public ResponseDto(boolean success, T data, ErrorCode errorCode){
-        this.success = success;
-        this.data = data;
-        this.error = new Error(errorCode);
-    }
+//    public ResponseDto(boolean success, T data, ErrorCode errorCode){
+//        this.success = success;
+//        this.data = data;
+//        this.error = new Error(errorCode);
+//    }
     public static class Error{
         private final String code;
         private final String message;

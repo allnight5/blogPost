@@ -18,7 +18,7 @@ public class PostController {
     //1. 게시글 생성 API
     @ResponseBody
     @PostMapping("/post")
-    public PostResponseDto createPost(@RequestBody PostRequestDto requestDto, HttpServletRequest request) {
+    public ResponseDto<PostResponseDto> createPost(@RequestBody PostRequestDto requestDto, HttpServletRequest request) {
         return postService.createPost(requestDto, request);
     }
 

@@ -32,14 +32,14 @@ public class PostService {
 
     //게시글 생성
     @Transactional
-    public PostResponseDto createPost(PostRequestDto requestDto, HttpServletRequest request) {
+    public ResponseDto<PostResponseDto> createPost(PostRequestDto requestDto, HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
         Claims claims;
         if(token != null){
             if(jwtUtil.validateToken(token)){
                 claims = jwtUtil.getUserInfoFromToken(token);
             }else {
-                throw new IllegalArgumentException("Token Error");
+                return new ResponseDto<>("토큰이 정확하지 않습니다...", 400);
             }
             User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
                     () -> new IllegalArgumentException("사용자 정보가 존재하지 않습니다."));
@@ -47,7 +47,7 @@ public class PostService {
             Post post = new Post(requestDto, user.getUsername());
             post.addUser(user);
             postRepository.save(post);
-            return new PostResponseDto(post);
+            return new ResponseDto<>(new PostResponseDto(post));
         }else {
             return null;
         }
