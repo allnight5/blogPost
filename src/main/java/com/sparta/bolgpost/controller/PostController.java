@@ -33,7 +33,7 @@ public class PostController {
     // 3. 선택한 게시글 조회 API
     @ResponseBody
     @GetMapping("/post/{id}")
-    public List<PostResponseDto> getPost(@PathVariable Long id) {
+    public ResponseDto<List<PostResponseDto>> getPost(@PathVariable Long id) {
         return postService.getPost(id);
     }
 

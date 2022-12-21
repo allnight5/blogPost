@@ -74,11 +74,10 @@ public class PostService {
 
     //선택한 게시글 조회
     @Transactional
-    public List<PostResponseDto> getPost(Long id) {
+    public ResponseDto<List<PostResponseDto>> getPost(Long id) {
         Optional<Post> post = postRepository.findById(id);
         if(post.isEmpty()){
-            MessageResponseDto msg = new MessageResponseDto("해당 게시글이 없습니다..", 400);
-            throw new IllegalArgumentException("존재하지 않습니다.");
+            return new ResponseDto<>("해당 게시글이 없습니다..", 400);
         }
         List<PostResponseDto> result = new ArrayList<>();
         List<Comment> comments = commentRepository.findAllByPosts(post.get());
@@ -89,7 +88,7 @@ public class PostService {
         }
         postResponseDto.setCommentList(commentResponseDto);
         result.add(postResponseDto);
-        return result;
+        return new ResponseDto<>(result);
     }
     //선택한 게시글 수정
     @Transactional
