@@ -1,7 +1,7 @@
 package com.sparta.bolgpost.controller;
 
 import com.sparta.bolgpost.dto.LoginRequestDto;
-import com.sparta.bolgpost.dto.MsgResponseDto;
+import com.sparta.bolgpost.dto.MessageResponseDto;
 import com.sparta.bolgpost.service.UserService;
 import com.sparta.bolgpost.dto.SignupRequestDto;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,32 +10,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 
-@RestController
+@RestController//CONTROLLER VS RESTCONTROLLER 두개의 차이점
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-    @GetMapping("/login")
-    public ModelAndView loginPage() {
-        return new ModelAndView("login");
-    }
-
-    @GetMapping("/signup")
-    public ModelAndView signupPage() {
-        return new ModelAndView("signup");
-    }
-
-
+    //1.회웝가입
     @ResponseBody
     @PostMapping("/signup")
-    public ResponseEntity<MsgResponseDto> signupPage(@RequestBody @Valid SignupRequestDto signupRequestDto) {
+    public ResponseEntity<MessageResponseDto> signupPage(@RequestBody @Valid SignupRequestDto signupRequestDto) {
         userService.signup(signupRequestDto);
 
-        return ResponseEntity.ok(new MsgResponseDto("회원 가입 완료", HttpStatus.OK.value()));
+        return ResponseEntity.ok(new MessageResponseDto("회원 가입 완료", HttpStatus.OK.value()));
 
     }
 //    @ResponseBody
@@ -45,12 +34,12 @@ public class UserController {
 //
 //        return new MsgResponseDto("로그인 성공", HttpStatus.OK.value());
 //    }
+    
+    //2.로그인
     @ResponseBody
     @PostMapping("/login")
-    public ResponseEntity<MsgResponseDto> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public ResponseEntity<MessageResponseDto> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         userService.login(loginRequestDto, response);
-
-        return ResponseEntity.ok(new MsgResponseDto("로그인 성공", HttpStatus.OK.value()));
+        return ResponseEntity.ok(new MessageResponseDto("로그인 성공", HttpStatus.OK.value()));
     }
-
 }

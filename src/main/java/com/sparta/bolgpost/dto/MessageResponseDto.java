@@ -6,13 +6,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class MsgResponseDto {
-    private String msg;
+public class MessageResponseDto {
+    private String message;
 
     private int statusCode;
 
-    public MsgResponseDto(String msg, int statusCode){
-        this.msg = msg;
+    public MessageResponseDto(String message, int statusCode){
+        this.message = message;
         this.statusCode = statusCode;
     }
 }

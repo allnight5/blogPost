@@ -8,8 +8,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     // List 에 모든 게시글을 담아서 가져온다.
     List<Post> findAllByOrderByModifiedDateDesc();
-    Optional<Post> findByIdAndUserId(Long id, Long userId);
 
     // 게시글 하나만 조회하는 기능
-    Optional<Post> findById(Long id);
+    Optional<Post> findById(Long Id);
+
+
 }
