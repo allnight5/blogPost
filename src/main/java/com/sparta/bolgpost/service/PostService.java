@@ -50,7 +50,7 @@ public class PostService {
             postRepository.save(post);
             return new ResponseDto<>(new PostResponseDto(post));
         }else {
-            return null;
+            return new ResponseDto<>("토큰이 정확하지 않습니다...", 400);
         }
     }
     //게시글 전체 목록 조회

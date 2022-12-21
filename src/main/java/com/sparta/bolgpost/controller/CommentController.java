@@ -16,7 +16,7 @@ public class CommentController {
     //1. 게시글 생성 API
     @ResponseBody
     @PostMapping("/{id}")
-    public CommentResponseDto createComment(@RequestBody CommentRequestDto requestDto, HttpServletRequest request, @PathVariable Long id) {
+    public ResponseDto<CommentResponseDto> createComment(@RequestBody CommentRequestDto requestDto, HttpServletRequest request, @PathVariable Long id) {
         return commentService.createComment(requestDto, request, id);
     }
     @ResponseBody

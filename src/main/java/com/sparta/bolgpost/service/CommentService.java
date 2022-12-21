@@ -34,7 +34,7 @@ public class CommentService {
 
     //댓글 생성
     @Transactional
-    public CommentResponseDto createComment(CommentRequestDto requestDto, HttpServletRequest request, Long id) {
+    public ResponseDto<CommentResponseDto> createComment(CommentRequestDto requestDto, HttpServletRequest request, Long id) {
         String token = jwtUtil.resolveToken(request);
         Claims claims;
         // 토큰이 있는 경우에만 글 작성 가능
@@ -44,21 +44,23 @@ public class CommentService {
                 // 토큰에서 사용자 정보 가져오기
                 claims = jwtUtil.getUserInfoFromToken(token);
             }else {
-                throw new IllegalArgumentException("Token Error");
+                return new ResponseDto<>("사용자 정보가 만료되었습니다.", 400);
             }
-            // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회 -> 로그인 안했으면 로그인 하라고 메시지
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("로그인 해주세요")
-            );
-            Post post = postRepository.findById(id).orElseThrow(
-                    () -> new IllegalArgumentException("해당 아이디의 포스트가 없습니다.")
-            );
-            Comment comment = new Comment(requestDto, user.getUsername());
-            comment.addUserAndPost(user, post);
+            Optional<User> user = userRepository.findByUsername(claims.getSubject());
+            if(user.isEmpty()) {
+                return new ResponseDto<>("해당 게시글에 수정 대한 권한이 없습니다.", 400);
+            }
+            Optional<Post> post = postRepository.findById(id);
+            if(post.isEmpty()) {
+//                return new MessageResponseDto("존재하지 않는 게시글입니다.", HttpStatus.FAILED_DEPENDENCY.value());
+                return new ResponseDto<>("존재하지 않는 게시글입니다.", 400);
+            }
+            Comment comment = new Comment(requestDto, user.get().getUsername());
+            comment.addUserAndPost(user.get(), post.get());
             commentRepository.save(comment);
-            return new CommentResponseDto(comment);
+            return new ResponseDto<>(new CommentResponseDto(comment));
         }else {
-            return null;
+            return new ResponseDto<>("존재하지 않는 토큰입니다.", 400);
         }
     }
 
