@@ -122,7 +122,7 @@ public class CommentService {
                 MessageResponseDto msg = new MessageResponseDto("해당 게시글이 없습니다.", 400);
                 return msg;
             }
-            if (comment.get().isWriter(user.get().getUsername()) || user.get().getRole() == UserRoleEnum.ADMIN){
+            if (comment.get().isWriter(user.get().getUsername()) || user.get().getRole().equals(UserRoleEnum.ADMIN)){
                 commentRepository.deleteById(comment.get().getId());
                 MessageResponseDto msg = new MessageResponseDto("삭제 성공", HttpStatus.OK.value());
                 return msg;

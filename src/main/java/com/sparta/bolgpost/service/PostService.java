@@ -112,7 +112,7 @@ public class PostService {
 //                return new MessageResponseDto("존재하지 않는 게시글입니다.", HttpStatus.FAILED_DEPENDENCY.value());
                 return new MessageResponseDto("존재하지 않는 게시글입니다.", 400);
             }
-            if(user.get().getUsername().equals(post.get().getUsername()) || user.get().getRole() == UserRoleEnum.ADMIN) {
+            if(user.get().getUsername().equals(post.get().getUsername()) || user.get().getRole().equals(UserRoleEnum.ADMIN)) {
                 post.get().update(requestDto);
                 return new MessageResponseDto("수정 성공", HttpStatus.OK.value());
             }
@@ -142,7 +142,7 @@ public class PostService {
             if(post.isEmpty()) {
                 return new MessageResponseDto("존재하지 않는 게시글입니다.", HttpStatus.FAILED_DEPENDENCY.value());
             }
-            if(user.get().getUsername().equals(post.get().getUsername()) || user.get().getRole() == UserRoleEnum.ADMIN) {
+            if(user.get().getUsername().equals(post.get().getUsername()) || user.get().getRole().equals(UserRoleEnum.ADMIN)) {
                 postRepository.delete(post.get());
                 return new MessageResponseDto("삭제 성공", HttpStatus.OK.value());
             }
