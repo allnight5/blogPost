@@ -34,7 +34,8 @@ public class PostController {
         }else {
             return new ResponseDto<>("토큰이 정확하지 않습니다...", 400);
         }
-        return postService.createPost(requestDto, claims);
+        String username = claims.getSubject();
+        return postService.createPost(requestDto, username);
     }
 
     // 2. 게시글 전체 목록 조회 API
@@ -56,13 +57,37 @@ public class PostController {
     @ResponseBody
     @PutMapping("/post/{id}")
     public MessageResponseDto updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto, HttpServletRequest request) {
-        return postService.update(id, requestDto, request);
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+        if (token != null) {
+            if (jwtUtil.validateToken(token)) {
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                return new MessageResponseDto("토큰이 존재하지 않습니다..", 400);
+            }
+        }else {
+            return new MessageResponseDto("토큰이 존재하지 않습니다..", 400);
+        }
+        String username = claims.getSubject();
+        return postService.update(id, requestDto, username);
     }
 
     //선택한 게시글 삭제 API
     @ResponseBody
     @DeleteMapping("/post/{id}")
     public MessageResponseDto deletePost(@PathVariable Long id, HttpServletRequest request) {
-        return postService.delete(id, request);
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+        if (token != null) {
+            if (jwtUtil.validateToken(token)) {
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                return new MessageResponseDto("토큰이 존재하지 않습니다..", 400);
+            }
+        }else {
+            return new MessageResponseDto("토큰이 존재하지 않습니다..", 400);
+        }
+        String username = claims.getSubject();
+        return postService.delete(id, username);
     }
 }

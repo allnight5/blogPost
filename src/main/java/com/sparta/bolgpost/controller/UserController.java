@@ -20,7 +20,6 @@ public class UserController {
 
     private final UserService userService;
 
-    private final JwtUtil jwtUtil;
     //1.회웝가입
     @ResponseBody
     @PostMapping("/signup")
@@ -41,12 +40,17 @@ public class UserController {
     @ResponseBody
     @PostMapping("/login")
     public MessageResponseDto login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+        //이름과 유저인지 관리자인지 구분한 토큰을 가져오는 부분
         MessageResponseDto msg = userService.login(loginRequestDto);
+        //문자열 token에 가져온 정보를 넣어주는 부분
         String token = msg.getMessage();
+        //헤더를 통해 토큰을 발급해 주는 부분
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+        //400은 실패기 때문에 실패한 메시지와 상태코드를 가져온다.
         if(msg.getStatusCode() == 400){
             return new MessageResponseDto(msg.getMessage(), msg.getStatusCode());
         }
+        //로그인 성공했으니 로그인을 성공했다는 메시지와 상태 200코드를 보내준다.
         else {
             return new MessageResponseDto("로그인 되었습니다.", 200);
         }

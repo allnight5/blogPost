@@ -18,14 +18,16 @@ public class ResponseDto<T> {
         this.message = message;
         this.statusCode = statusCode;
     }
+    public ResponseDto(T data){
+        this.data = data;
+    }
+
 //    public ResponseDto(String message, int statusCode, T data){
 //        this.message = message;
 //        this.statusCode = statusCode;
 //        this.data = data;
 //    }
-    public ResponseDto(T data){
-        this.data = data;
-    }
+
 //    public ResponseDto(boolean success, T data, ErrorCode errorCode){
 //        this.success = success;
 //        this.data = data;
