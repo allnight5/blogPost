@@ -29,8 +29,8 @@ public class Post extends Timestamped{
     @Column(nullable = false)
     private String content;
 
-    @OneToMany(mappedBy = "posts", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> commentList = new ArrayList<>();
+    @OneToMany(mappedBy = "posts", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private final List<Comment> commentList = new ArrayList<>();
 
     //게시글 참조하는 User관계 설정
     @ManyToOne(fetch = FetchType.LAZY)

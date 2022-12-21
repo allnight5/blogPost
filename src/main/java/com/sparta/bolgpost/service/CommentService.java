@@ -5,6 +5,7 @@ import com.sparta.bolgpost.dto.*;
 import com.sparta.bolgpost.entity.Comment;
 import com.sparta.bolgpost.entity.Post;
 import com.sparta.bolgpost.entity.User;
+import com.sparta.bolgpost.enums.UserRoleEnum;
 import com.sparta.bolgpost.jwt.JwtUtil;
 import com.sparta.bolgpost.repository.CommentRepository;
 import com.sparta.bolgpost.repository.PostRepository;
@@ -64,38 +65,34 @@ public class CommentService {
 
     //댓글 수정
     @Transactional
-    public MessageResponseDto updateComment(CommentRequestDto requestDto, HttpServletRequest request, Long id){
+    public MessageResponseDto updateComment(CommentRequestDto requestDto, HttpServletRequest request, Long id) {
         String token = jwtUtil.resolveToken(request);
         Claims claims;
-        if(token != null){
-            if(jwtUtil.validateToken(token)){
+        if (token != null) {
+            if (jwtUtil.validateToken(token)) {
                 claims = jwtUtil.getUserInfoFromToken(token);
-            }else {
-                throw new IllegalArgumentException("Token Error");
+            } else {
+                return new MessageResponseDto("토큰이 틀렸습니다.", 400);
             }
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("회원이 아닙니다.")
-            );
+            Optional<User> user = userRepository.findByUsername(claims.getSubject());
+            if (user.isEmpty()) {
+                return new MessageResponseDto("해당 게시글에 수정 대한 권한이 없습니다.", 400);
+            }
             //id만 가져가니까. 로그인하면 그냥 제거하고 수정한다.
-            //그러면 username도 가져가서 확인을하면서 해야하는데.. 이러면 jwt의 토큰의미가 있나?
-            Comment comment = commentRepository.findById(id).orElseThrow(
-                    () -> new IllegalArgumentException("작성한 댓글이 없습니다.")
-            );
-            if(user.getRole().equals("ADMIN") || comment.isWriter(user.getUsername())){
-                comment.update(requestDto);
+            Optional<Comment> comment = commentRepository.findById(id);
+            if(comment.isEmpty()) {
+                MessageResponseDto msg = new MessageResponseDto("해당 게시글이 없습니다.", 400);
+                return msg;
+            }
+            if (user.get().getRole() == UserRoleEnum.ADMIN || comment.get().isWriter(user.get().getUsername())) {
+                comment.get().update(requestDto);
                 MessageResponseDto msg = new MessageResponseDto("업데이트 성공", HttpStatus.OK.value());
                 return msg;
-//                ResponseDto<CommentResponseDto> responseDto = new ResponseDto<>(true,new CommentResponseDto(comment));
-//                return responseDto;
-//            return new CommentResponseDto(comment);
             }
-//            User user = userRepository.findById(comment.getUser().getId()).orElseThrow(
-//                    () -> new IllegalArgumentException("작성자가 아닙니다")
-//            );
-        }
-        MessageResponseDto msg = new MessageResponseDto("권한이 없습니다.", HttpStatus.FAILED_DEPENDENCY.value());
-        return msg;
 //        return null;
+        }
+        MessageResponseDto msg = new MessageResponseDto("토큰이 만료되었습니다.", HttpStatus.FAILED_DEPENDENCY.value());
+        return msg;
     }
 
 
@@ -111,14 +108,8 @@ public class CommentService {
             }else {
                 throw new IllegalArgumentException("token error");
             }
-//            // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회 -> 로그인 안했으면 로그인 하라고 메시지
-//            User user = userRepository.findById(id).orElseThrow(
-//                    () -> new IllegalArgumentException("로그인 해주세요")
-//            );
-//            Comment comment = (Comment) commentRepository.findByUsername(user.getUsername());
-            // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회 -> 로그인 안했으면 로그인 하라고 메시지
+            //토큰에서 가져온 사용자 정보를 사용하여 DB 조회 -> 로그인 안했으면 로그인 하라고 메시지
             //id만 가져가니까. 로그인하면 그냥 제거하고 수정한다.
-            //그러면 username도 가져가서 확인을하면서 해야하는데.. 이러면 jwt의 토큰의미가 있나?
             Optional<User> user = userRepository.findByUsername(claims.getSubject());
             if(user.isEmpty()) {
                 MessageResponseDto msg = new MessageResponseDto("해당 게시글에 수정 대한 권한이 없습니다.", 400);
@@ -129,7 +120,7 @@ public class CommentService {
                 MessageResponseDto msg = new MessageResponseDto("해당 게시글이 없습니다.", 400);
                 return msg;
             }
-            if (comment.get().isWriter(user.get().getUsername()) || user.get().getRole().equals("admin")){
+            if (comment.get().isWriter(user.get().getUsername()) || user.get().getRole() == UserRoleEnum.ADMIN){
                 commentRepository.deleteById(comment.get().getId());
                 MessageResponseDto msg = new MessageResponseDto("삭제 성공", HttpStatus.OK.value());
                 return msg;

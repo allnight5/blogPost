@@ -4,6 +4,7 @@ import com.sparta.bolgpost.dto.*;
 import com.sparta.bolgpost.entity.Comment;
 import com.sparta.bolgpost.entity.Post;
 import com.sparta.bolgpost.entity.User;
+import com.sparta.bolgpost.enums.UserRoleEnum;
 import com.sparta.bolgpost.jwt.JwtUtil;
 import com.sparta.bolgpost.repository.CommentRepository;
 import com.sparta.bolgpost.repository.PostRepository;
@@ -108,9 +109,10 @@ public class PostService {
             }
             Optional<Post> post = postRepository.findById(id);
             if(post.isEmpty()) {
-                return new MessageResponseDto("존재하지 않는 게시글입니다.", HttpStatus.FAILED_DEPENDENCY.value());
+//                return new MessageResponseDto("존재하지 않는 게시글입니다.", HttpStatus.FAILED_DEPENDENCY.value());
+                return new MessageResponseDto("존재하지 않는 게시글입니다.", 400);
             }
-            if(user.get().getUsername().equals(post.get().getUsername()) || user.get().getRole().equals(true)) {
+            if(user.get().getUsername().equals(post.get().getUsername()) || user.get().getRole() == UserRoleEnum.ADMIN) {
                 post.get().update(requestDto);
                 return new MessageResponseDto("수정 성공", HttpStatus.OK.value());
             }
@@ -140,8 +142,7 @@ public class PostService {
             if(post.isEmpty()) {
                 return new MessageResponseDto("존재하지 않는 게시글입니다.", HttpStatus.FAILED_DEPENDENCY.value());
             }
-            System.out.println("getRole봐보자 : "+user.get().getRole().toString());
-            if(user.get().getUsername().equals(post.get().getUsername()) || user.get().getRole().equals(true)) {
+            if(user.get().getUsername().equals(post.get().getUsername()) || user.get().getRole() == UserRoleEnum.ADMIN) {
                 postRepository.delete(post.get());
                 return new MessageResponseDto("삭제 성공", HttpStatus.OK.value());
             }

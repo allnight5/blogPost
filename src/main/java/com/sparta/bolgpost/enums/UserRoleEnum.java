@@ -1,7 +1,9 @@
 package com.sparta.bolgpost.enums;
 
 
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
+
 public enum UserRoleEnum {
-    USER,  // 사용자 권한
-    ADMIN  // 관리자 권한
+    USER,
+    ADMIN
 }
