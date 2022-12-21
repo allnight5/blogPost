@@ -150,6 +150,7 @@ spring 입문주차 과제
 
 <details>
     <summary>ERD설계</summary>
+# 잘못된 ERD    
     
 ![ERD 2](https://user-images.githubusercontent.com/45612782/208323717-0abd682c-e25c-424e-9976-e1b1dcc778f3.JPG)
 
@@ -261,11 +262,32 @@ entity와 dto를 활용하여 저장을 하면서 통신을 하였고 dto는 set
 
 1. 처음 설계한 API 명세서에 변경사항이 있었나요? 
 변경 되었다면 어떤 점 때문 일까요? 첫 설계의 중요성에 대해 작성해 주세요!
-2. ERD를 먼저 설계한 후 Entity를 개발했을 때 어떤 점이 도움이 되셨나요?
-3. JWT를 사용하여 인증/인가를 구현 했을 때의 장점은 무엇일까요?
-4. 반대로 JWT를 사용한 인증/인가의 한계점은 무엇일까요?
-5. 댓글이 달려있는 게시글을 삭제하려고 할 때 무슨 문제가 발생할까요? JPA가 아닌 Database 테이블 관점에서 해결방법이 무엇일까요?
-6. 5번과 같은 문제가 발생했을 때 JPA에서는 어떻게 해결할 수 있을까요?
-7. IoC / DI 에 대해 간략하게 설명해 주세요!
 
+    -설계처럼 하고 싶었는데 필요한 부분만 출력하기가 안됬습니다. dto에 entity를 감싸서 보내주는데
+    entity부분도 같이 출력되거나 해서 원하는 부분만 출력하기가 안되는 곳도 있었습니다..
+    아직 미숙해서 그런것 같습니다.
+
+2. ERD를 먼저 설계한 후 Entity를 개발했을 때 어떤 점이 도움이 되셨나요?
+    - ERD작성이 틀리게 작성되었다면 해멜수있지만 ERD를 올바르게 작성했다면 해메이지않고
+    작성할수 있을것 같습니다.  
+    
+3.  만약 댓글 기능이 있는 블로그에서 댓글이 달려있는 게시글을 삭제하려고 한다면 무슨 문제가 발생했을때 JPA에서는 어떻게 해결할 수 있을까요?
+    게시글만 작성해서 연결했을때는 이렇게 되겠지만. 
+    //comment.java
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "POST_ID")
+    private Post posts;
+
+    //post.java
+    //DB에서 외래키를 연결했을때 cascade를 이용하는것처럼 jpa에서도 사용이 가능하다.
+    @OneToMany(mappedBy = "posts")
+    private final List<Comment> commentList = new ArrayList<>();
+            ↓       ↓       ↓       ↓       ↓
+    @OneToMany(mappedBy = "posts", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private final List<Comment> commentList = new ArrayList<>();  
+    
+    //게시글 삭제시 작성된 댓글도 같이 삭제하고 싶다면 이렇게하면되고
+    //댓글이 남아있을때 관리자만 삭제할수있게하고 유저는 안되게 할때도
+    //관리자를 위해서 남겨둔 상태로 로직으로 댓글 확인후 삭제하게 하면 될것같다...
+    
 </details>
