@@ -2,12 +2,14 @@ package com.sparta.bolgpost.service;
 
 
 import com.sparta.bolgpost.dto.LoginRequestDto;
+import com.sparta.bolgpost.dto.MessageResponseDto;
 import com.sparta.bolgpost.dto.SignupRequestDto;
 import com.sparta.bolgpost.entity.User;
 import com.sparta.bolgpost.enums.UserRoleEnum;
 import com.sparta.bolgpost.jwt.JwtUtil;
 import com.sparta.bolgpost.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,17 +54,19 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public void login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public MessageResponseDto login(LoginRequestDto loginRequestDto) {
         String username = loginRequestDto.getUsername();
         String password = loginRequestDto.getPassword();
         // 사용자 확인
-        User user = userRepository.findByUsername(username).orElseThrow(
-                () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
-        );
-        // 비밀번호 확인
-        if(!user.getPassword().equals(password)){
-            throw  new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        Optional<User> user = userRepository.findByUsername(username);
+        if(user.isEmpty()){
+            return new MessageResponseDto("사용자가 존재하지 않습니다.", 400);
         }
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(), user.getRole()));
+        // 비밀번호 확인
+        if(!user.get().getPassword().equals(password)){
+            return new MessageResponseDto("비밀번호가 틀렸습니다.", 400);
+        }
+//        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.get().getUsername(), user.get().getRole()));
+        return new MessageResponseDto(jwtUtil.createToken(user.get().getUsername(), user.get().getRole()));
     }
 }
