@@ -15,6 +15,8 @@ import jakarta.servlet.http.HttpServletRequest;
 //중복 매핑을 적어줌
 @RequestMapping("/api")
 public class PostController {
+    //jwtUtil에 comment어느테이션을 넣어준이유는
+    //Service에서 사용하기 위해서이다.
     private final PostService postService;
     private final JwtUtil jwtUtil;
 
@@ -49,7 +51,7 @@ public class PostController {
     // 3. 선택한 게시글 조회 API
     @ResponseBody
     @GetMapping("/post/{id}")
-    public ResponseDto<List<PostResponseDto>> getPost(@PathVariable Long id) {
+    public ResponseDto<PostResponseDto> getPost(@PathVariable Long id) {
         return postService.getPost(id);
     }
 
@@ -77,6 +79,7 @@ public class PostController {
     @DeleteMapping("/post/{id}")
     public MessageResponseDto deletePost(@PathVariable Long id, HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
+
         Claims claims;
         if (token != null) {
             if (jwtUtil.validateToken(token)) {
