@@ -3,6 +3,7 @@ import com.sparta.bolgpost.entity.Comment;
 import com.sparta.bolgpost.entity.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,7 +17,9 @@ public class PostResponseDto{
         private String username;
         private LocalDateTime createdDate;
         private LocalDateTime modifiedDate;
+
         private List<CommentResponseDto> commentList;
+
         public PostResponseDto (Post post) {
             this.id = post.getId();
             this.createdDate = post.getCreatedDate();
@@ -34,7 +37,7 @@ public class PostResponseDto{
             this.modifiedDate = post.getModifiedDate();
         }
 
-    public void addCommentList(List<CommentResponseDto> commentList) {
+    public void setCommentList(List<CommentResponseDto> commentList) {
         this.commentList = commentList;
     }
 }
