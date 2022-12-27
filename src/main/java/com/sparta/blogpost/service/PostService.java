@@ -38,10 +38,8 @@ public class PostService {
 //            return new MessageResponseDto("해당 게시글에 수정 대한 권한이 없습니다.", 400);
 //        }
         Post post = new Post(requestDto, user.getUsername(), user);
-//        public void addUser(User user){
-//            this.users = user;
-//            users.getPosts().add(this);
-//        }
+        //2개짜리는 주석처리중 입니다.
+//        Post post = new Post(requestDto, user.getUsername());
 //        post.addUser(user);
         //failed to lazily initialize a collection of role: could not initialize proxy - no Session
         postRepository.save(post);

@@ -50,16 +50,19 @@ public class Post extends Timestamped{
         this.content = requestDto.getContent();
         this.username = username;
         this.users = user;
-
     }
     public void update(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
     }
-
+//    public Post(PostRequestDto requestDto, String username) {
+//        this.title = requestDto.getTitle();
+//        this.content = requestDto.getContent();
+//        this.username = username;
+//    }
     public void addUser(User user){
         this.users = user;
-//        users.getPosts().add(this);
+        users.getPosts().add(this);
     }
     public boolean isWriter(String username){
         if(Objects.equals(this.username, username)){
