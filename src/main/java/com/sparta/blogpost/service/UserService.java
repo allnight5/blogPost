@@ -9,6 +9,7 @@ import com.sparta.blogpost.enums.UserRoleEnum;
 import com.sparta.blogpost.jwt.JwtUtil;
 import com.sparta.blogpost.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +26,7 @@ public class UserService {
     private static final String ADMIN_TOKEN = "DeXi341@dNDI";
 
     @Transactional
-    public void signup(SignupRequestDto signupRequestDto) {
+    public MessageResponseDto signup(SignupRequestDto signupRequestDto) {
         String username = signupRequestDto.getUsername();
         String password = passwordEncoder.encode(signupRequestDto.getPassword());
 //        String email = signupRequestDto.getEmail();
@@ -33,7 +34,7 @@ public class UserService {
         // 회원 중복 확인
         Optional<User> found = userRepository.findByUsername(username);
         if (found.isPresent()) {
-            throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
+            return new MessageResponseDto("중복된 사용자가 존재합니다.", 400);
         }        // 회원 중복 확인
 //        Optional<User> emailFound = userRepository.findByEmail(email);
 //        if (emailFound .isPresent()) {
@@ -44,13 +45,14 @@ public class UserService {
         UserRoleEnum role = UserRoleEnum.USER;
         if (signupRequestDto.isAdmin()) {
             if (!signupRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
-                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
+                return new MessageResponseDto("관리자 암호가 틀려 등록이 불가능합니다.", 400);
             }
             role = UserRoleEnum.ADMIN;
         }
 
         User user = new User(username, password, role);
         userRepository.save(user);
+        return new MessageResponseDto("회원 가입 완료", HttpStatus.OK.value());
     }
 
     @Transactional(readOnly = true)
@@ -63,7 +65,7 @@ public class UserService {
             return new MessageResponseDto("사용자가 존재하지 않습니다.", 400);
         }
         // 비밀번호 확인
-        if(!user.get().getPassword().equals(password)){
+        if(!passwordEncoder.matches(password, user.get().getPassword())){
             return new MessageResponseDto("비밀번호가 틀렸습니다.", 400);
         }
 //        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.get().getUsername(), user.get().getRole()));

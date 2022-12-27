@@ -31,8 +31,19 @@ public class PostService {
     //1.게시글 생성
     @Transactional
     public ResponseDto<PostResponseDto> createPost(PostRequestDto requestDto, User user) {
-        Post post = new Post(requestDto, user.getUsername());
-        post.addUser(user);
+//        System.out.println("ProductService.createProduct");
+//        System.out.println("user.getUsername() = " + user.getUsername());
+//        Optional<User> user = userRepository.findByUsername(username);
+//        if(user.isEmpty()) {
+//            return new MessageResponseDto("해당 게시글에 수정 대한 권한이 없습니다.", 400);
+//        }
+        Post post = new Post(requestDto, user.getUsername(), user);
+//        public void addUser(User user){
+//            this.users = user;
+//            users.getPosts().add(this);
+//        }
+//        post.addUser(user);
+        //failed to lazily initialize a collection of role: could not initialize proxy - no Session
         postRepository.save(post);
         return new ResponseDto<>(new PostResponseDto(post));
     }

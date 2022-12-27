@@ -26,13 +26,13 @@ public class PostController {
     @ResponseBody
     @PostMapping("/post")
     public ResponseDto<PostResponseDto> createPost(@RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
         return postService.createPost(requestDto, userDetails.getUser());
+//        return postService.createPost(requestDto, userDetails.getUser());
     }
 
     // 2. 게시글 전체 목록 조회 API
     @ResponseBody
-    @GetMapping("/post")
+    @GetMapping("/post/get")
     public List<PostResponseDto> getPostList() {
 
         return postService.getPosts();
@@ -40,7 +40,7 @@ public class PostController {
 
     // 3. 선택한 게시글 조회 API
     @ResponseBody
-    @GetMapping("/post/{id}")
+    @GetMapping("/post/get/{id}")
     public ResponseDto<PostResponseDto> getPost(@PathVariable Long id) {
         return postService.getPost(id);
     }

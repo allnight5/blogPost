@@ -32,15 +32,19 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    @OneToMany(mappedBy = "user" , cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "users" , cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final List<Post> posts = new ArrayList<>();
-    @OneToMany(mappedBy = "user" , cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "users" , cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final List<Comment> commentList = new ArrayList<>();
+
 
     public User(String username, String password,UserRoleEnum role) {
         this.username = username;
         this.password = password;
 //        this.email = email;
         this.role = role;
+    }
+    public void addUser(Post post){
+        this.posts.add(post);
     }
 }

@@ -29,7 +29,7 @@ public class Comment extends Timestamped{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
-    private User user;
+    private User users;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "POST_ID")
@@ -45,9 +45,9 @@ public class Comment extends Timestamped{
     }
 
     public void addUserAndPost(User user, Post post){
-        this.user = user;
+        this.users = user;
         this.posts = post;
-        posts.getCommentList().add(this);
+//        posts.getCommentList().add(this);
     }
     public boolean isWriter(String username){
         if(Objects.equals(this.username, username)){
