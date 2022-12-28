@@ -40,12 +40,29 @@ public class PostService {
         Post post = new Post(requestDto, user.getUsername(), user);
         //2개짜리는 주석처리중 입니다.
 //        Post post = new Post(requestDto, user.getUsername());
-//        post.addUser(user);
+//        post.addUser(post.getUsers());
         //failed to lazily initialize a collection of role: could not initialize proxy - no Session
         postRepository.save(post);
         return new ResponseDto<>(new PostResponseDto(post));
     }
     //2.게시글 전체 목록 조회
+    /*
+    public PostListResponseDto getPosts() {
+    //PostListResponseDto 라는 ListDto를 만들어서 넣어주어도 된다.
+        PostListResponseDto postListResponseDto = new PostListResponseDto();
+        List<Post> ListPost = PostRepository.findAllByOrderByModifiedAtDesc();
+        // (타입 변수명 : 배열)
+        // ListPost 가 3 사이즈의 배열이라고 가정하면 5번을 돈다. (도는 횟수 -> ListPost.size())
+        for (Post post : listPost) {
+            List<CommentResponseDto> commentList = new ArrayList<>();
+            for (Comment comment : board.getCommentsList()) {
+                commentList.add(new CommentResponseDto(comment));
+            }
+            postListResponseDto.addPost(new PostResponseDto(post, commentList));
+        }
+        return postListResponseDto;
+    }
+     */
     @Transactional(readOnly = true)
     public List<PostResponseDto> getPosts() {
         List<Post> data = postRepository.findAllByOrderByModifiedDateDesc();
@@ -113,6 +130,10 @@ public class PostService {
 //        if(user.isEmpty()) {
 //            return new MessageResponseDto("해당 게시글에 수정 대한 권한이 없습니다.", 400);
 //        }
+        //전역처리를할시
+//        Post post = postRepository.findById(id).orElseThrow(
+//                ()-> new IllegalArgumentException("존재하지 않는 게시글입니다.")
+//        );
         Optional<Post> post = postRepository.findById(id);
         if(post.isEmpty()) {
 //                return new MessageResponseDto("존재하지 않는 게시글입니다.", HttpStatus.FAILED_DEPENDENCY.value());

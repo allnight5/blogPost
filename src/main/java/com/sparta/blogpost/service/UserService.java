@@ -25,6 +25,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private static final String ADMIN_TOKEN = "DeXi341@dNDI";
 
+    //1.회원가입
     @Transactional
     public MessageResponseDto signup(SignupRequestDto signupRequestDto) {
         String username = signupRequestDto.getUsername();
@@ -43,6 +44,8 @@ public class UserService {
 
         // 사용자 ROLE 확인
         UserRoleEnum role = UserRoleEnum.USER;
+        //어드민인지 유저인지 확인하는 조건문
+        //다 통과하면 role이 admin으로 변경된다.
         if (signupRequestDto.isAdmin()) {
             if (!signupRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
                 return new MessageResponseDto("관리자 암호가 틀려 등록이 불가능합니다.", 400);
@@ -55,6 +58,7 @@ public class UserService {
         return new MessageResponseDto("회원 가입 완료", HttpStatus.OK.value());
     }
 
+    //2.로그인
     @Transactional(readOnly = true)
     public MessageResponseDto login(LoginRequestDto loginRequestDto) {
         String username = loginRequestDto.getUsername();

@@ -25,13 +25,14 @@ public class PostResponseDto{
             this.username = post.getUsername();
             this.content = post.getContent();
         }
-        public PostResponseDto (Post post, Comment comment) {
+        public PostResponseDto (Post post, List<CommentResponseDto> comment) {
             this.id = post.getId();
+            this.createdDate = post.getCreatedDate();
+            this.modifiedDate = post.getModifiedDate();
             this.title = post.getTitle();
             this.content = post.getContent();
             this.username = post.getUsername();
-            this.createdDate = post.getCreatedDate();
-            this.modifiedDate = post.getModifiedDate();
+            this.commentList = comment;
         }
 
     public void addCommentList(List<CommentResponseDto> commentList) {

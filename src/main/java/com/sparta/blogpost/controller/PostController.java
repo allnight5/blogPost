@@ -26,6 +26,14 @@ public class PostController {
     @ResponseBody
     @PostMapping("/post")
     public ResponseDto<PostResponseDto> createPost(@RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        /*
+            @AuthenticationPrincipal어노테이션이 하는역할
+            스프링 시큐리티가 제공해주는 기능 중에 하나로 스프링 MVC 핸들러 파라메터에 @AuthenticationPrincipal를
+            사용하면 getPrincipal() 로 리턴 받을 수 있는 객체를 바로 주입받을 수가 있다고 한다.
+            있는 지 없는지만 확인하는 용도로 사용
+            인증 안한 경우에 null
+            인증 한 경우에는 username과 authorities 참조 가능
+         */
         return postService.createPost(requestDto, userDetails.getUser());
 //        return postService.createPost(requestDto, userDetails.getUser());
     }
