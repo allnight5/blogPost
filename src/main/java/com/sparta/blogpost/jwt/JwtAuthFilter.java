@@ -35,8 +35,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 jwtExceptionHandler(response, "Token Error", HttpStatus.UNAUTHORIZED.value());
                 return;
             }
-            //정보의 한 덩어리를 클레임(claim)이라고 부르며, 클레임은 key-value의 한 쌍으로 이루어져있습니다
-            //  jwtUtil의 getUserInfoFromToken 메소드를 통하여 claims 형태로 claims info변수에 token정보를 받습니다.
+            // 정보의 한 덩어리를 클레임(claim)이라고 부르며, 클레임은 key-value의 한 쌍으로 이루어져있습니다
+            // jwtUtil의 getUserInfoFromToken 메소드를 통하여 claims 형태로 claims info변수에 token정보를 받습니다.
             Claims info = jwtUtil.getUserInfoFromToken(token);
             //이제 아래 setAuthentication으로 받은 claims를 전송하여
             //Authentication 설정을해준다.

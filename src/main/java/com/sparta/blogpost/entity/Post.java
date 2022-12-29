@@ -1,13 +1,10 @@
 package com.sparta.blogpost.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.blogpost.dto.PostRequestDto;
-import com.sparta.blogpost.dto.UserResponseDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;

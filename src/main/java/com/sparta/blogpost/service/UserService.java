@@ -64,15 +64,18 @@ public class UserService {
         String username = loginRequestDto.getUsername();
         String password = loginRequestDto.getPassword();
         // 사용자 확인
-        Optional<User> user = userRepository.findByUsername(username);
-        if(user.isEmpty()){
-            return new MessageResponseDto("사용자가 존재하지 않습니다.", 400);
-        }
+        User user = userRepository.findByUsername(username).orElseThrow(
+                () -> new IllegalArgumentException("사용자가 존재하지 않습니다. 회원가입 해주시기 바랍니다.")
+        );
+//        Optional<User> user = userRepository.findByUsername(username);
+//        if(user.isEmpty()){
+//            return new MessageResponseDto("사용자가 존재하지 않습니다.", 400);
+//        }
         // 비밀번호 확인
-        if(!passwordEncoder.matches(password, user.get().getPassword())){
+        if(!passwordEncoder.matches(password, user.getPassword())){
             return new MessageResponseDto("비밀번호가 틀렸습니다.", 400);
         }
 //        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.get().getUsername(), user.get().getRole()));
-        return new MessageResponseDto(jwtUtil.createToken(user.get().getUsername(), user.get().getRole()));
+        return new MessageResponseDto(jwtUtil.createToken(user.getUsername(), user.getRole()));
     }
 }

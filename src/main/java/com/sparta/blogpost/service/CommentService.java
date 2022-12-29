@@ -50,13 +50,16 @@ public class CommentService {
 //            if(user.isEmpty()) {
 //                return new ResponseDto<>("해당 게시글에 수정 대한 권한이 없습니다.", 400);
 //            }
-        Optional<Post> post = postRepository.findById(id);
-        if(post.isEmpty()) {
-//                return new MessageResponseDto("존재하지 않는 게시글입니다.", HttpStatus.FAILED_DEPENDENCY.value());
-            return new ResponseDto<>("존재하지 않는 게시글입니다.", 400);
-        }
+//        Optional<Post> post = postRepository.findById(id);
+//        if(post.isEmpty()) {
+////                return new MessageResponseDto("존재하지 않는 게시글입니다.", HttpStatus.FAILED_DEPENDENCY.value());
+//            return new ResponseDto<>("존재하지 않는 게시글입니다.", 400);
+//        }
+        Post post = postRepository.findById(id).orElseThrow(
+                ()-> new IllegalArgumentException("이미 삭제된 게시글입니다.")
+        );
         Comment comment = new Comment(requestDto, user.getUsername());
-        comment.addUserAndPost(user, post.get());
+        comment.addUserAndPost(user, post);
         commentRepository.save(comment);
         return new ResponseDto<>(new CommentResponseDto(comment));
 //        }else {
@@ -81,18 +84,20 @@ public class CommentService {
 //                return new MessageResponseDto("해당 게시글에 수정 대한 권한이 없습니다.", 400);
 //            }
             //id만 가져가니까. 로그인하면 그냥 제거하고 수정한다.
-        Optional<Comment> comment = commentRepository.findById(id);
-        if(comment.isEmpty()) {
-            MessageResponseDto msg = new MessageResponseDto("해당 게시글이 없습니다.", 400);
-            return msg;
-        }
-        if (user.getRole() == UserRoleEnum.ADMIN || comment.get().isWriter(user.getUsername())) {
-            comment.get().update(requestDto);
+//        Optional<Comment> comment = commentRepository.findById(id);
+//        if(comment.isEmpty()) {
+//            MessageResponseDto msg = new MessageResponseDto("해당 게시글이 없습니다.", 400);
+//            return msg;
+//        }
+        Comment comment = commentRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("해당 게시글이 삭제되어 존재하지 않습니다.")
+        );
+        if (user.getRole() == UserRoleEnum.ADMIN || comment.isWriter(user.getUsername())) {
+            comment.update(requestDto);
             MessageResponseDto msg = new MessageResponseDto("업데이트 성공", HttpStatus.OK.value());
             return msg;
         }
 //        return null;
-
         MessageResponseDto msg = new MessageResponseDto("토큰이 만료되었습니다.", HttpStatus.FAILED_DEPENDENCY.value());
         return msg;
     }
@@ -117,13 +122,21 @@ public class CommentService {
 //                MessageResponseDto msg = new MessageResponseDto("해당 게시글에 수정 대한 권한이 없습니다.", 400);
 //                return msg;
 //            }
-        Optional<Comment> comment = commentRepository.findById(id);
-        if(comment.isEmpty()) {
-            MessageResponseDto msg = new MessageResponseDto("해당 게시글이 없습니다.", 400);
-            return msg;
-        }
-        if (comment.get().isWriter(user.getUsername()) || user.getRole().equals(UserRoleEnum.ADMIN)){
-            commentRepository.deleteById(comment.get().getId());
+//        Optional<Comment> comment = commentRepository.findById(id);
+//        if(comment.isEmpty()) {
+//            MessageResponseDto msg = new MessageResponseDto("해당 게시글이 없습니다.", 400);
+//            return msg;
+//        }
+//        if (comment.get().isWriter(user.getUsername()) || user.getRole().equals(UserRoleEnum.ADMIN)){
+//            commentRepository.deleteById(comment.get().getId());
+//            MessageResponseDto msg = new MessageResponseDto("삭제 성공", HttpStatus.OK.value());
+//            return msg;
+//        }
+        Comment comment = commentRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("해당 게시글이 삭제되어 존재하지 않습니다.")
+        );
+        if (comment.isWriter(user.getUsername()) || user.getRole().equals(UserRoleEnum.ADMIN)){
+            commentRepository.deleteById(comment.getId());
             MessageResponseDto msg = new MessageResponseDto("삭제 성공", HttpStatus.OK.value());
             return msg;
         }
@@ -131,7 +144,4 @@ public class CommentService {
         MessageResponseDto msg = new MessageResponseDto("삭제실패", HttpStatus.FAILED_DEPENDENCY.value());
         return msg;
     }
-
-
-
 }

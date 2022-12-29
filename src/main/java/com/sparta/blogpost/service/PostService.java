@@ -33,6 +33,9 @@ public class PostService {
     public ResponseDto<PostResponseDto> createPost(PostRequestDto requestDto, User user) {
 //        System.out.println("ProductService.createProduct");
 //        System.out.println("user.getUsername() = " + user.getUsername());
+//        User users = userRepository.findByUsername(user.getUsername()).orElseThrow(
+//                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+//        );
 //        Optional<User> user = userRepository.findByUsername(username);
 //        if(user.isEmpty()) {
 //            return new MessageResponseDto("해당 게시글에 수정 대한 권한이 없습니다.", 400);
@@ -40,7 +43,7 @@ public class PostService {
         Post post = new Post(requestDto, user.getUsername(), user);
         //2개짜리는 주석처리중 입니다.
 //        Post post = new Post(requestDto, user.getUsername());
-//        post.addUser(post.getUsers());
+//        post.addUser(users);
         //failed to lazily initialize a collection of role: could not initialize proxy - no Session
         postRepository.save(post);
         return new ResponseDto<>(new PostResponseDto(post));
@@ -98,18 +101,22 @@ public class PostService {
     //3.선택한 게시글 조회
     @Transactional
     public ResponseDto<PostResponseDto> getPost(Long id) {
-        Optional<Post> post = postRepository.findById(id);
+
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("게시글이 삭제되었습니다.")
+        );
+//        Optional<Post> post = postRepository.findById(id);
         //OPtional로 null은 받지않지만
         //비어있을수는 있음 그러니 empty검사를해서 비어있다면 게시글이 없다는
         //예외처리 Dto를 되돌려줌
-        if(post.isEmpty()){
-            return new ResponseDto<>("해당 게시글이 없습니다..", 400);
-        }
+//        if(post.isEmpty()){
+//            return new ResponseDto<>("해당 게시글이 없습니다..", 400);
+//        }
         //이게 JPA로 양방향 연결이 post로 되어있어서
         //이 포스트와 연결된 댓글(comment)만 comments라는 리스트 멤버변수에 넣어줌
-        List<Comment> comments = commentRepository.findAllByPosts(post.get());
+        List<Comment> comments = commentRepository.findAllByPosts(post);
         //읽어 들인 post를 Dto형태로 형변환 해줌
-        PostResponseDto postResponseDto = new PostResponseDto(post.get());
+        PostResponseDto postResponseDto = new PostResponseDto(post);
         //이제 이하나의 포스트에 연관된 댓글을 담아줄 List를 만들어줌
         List<CommentResponseDto> commentResponseDto = new ArrayList<>();
         //리스트를 만들었다면 이제 그 리스트에 연관된 댓글을 담아야 하니
@@ -134,16 +141,19 @@ public class PostService {
 //        Post post = postRepository.findById(id).orElseThrow(
 //                ()-> new IllegalArgumentException("존재하지 않는 게시글입니다.")
 //        );
-        Optional<Post> post = postRepository.findById(id);
-        if(post.isEmpty()) {
-//                return new MessageResponseDto("존재하지 않는 게시글입니다.", HttpStatus.FAILED_DEPENDENCY.value());
-            return new MessageResponseDto("존재하지 않는 게시글입니다.", 400);
-        }
+        Post post = postRepository.findById(id).orElseThrow(
+                ()-> new IllegalArgumentException("이미 삭제된 게시글입니다.")
+        );
+//        Optional<Post> post = postRepository.findById(id);
+//        if(post.isEmpty()) {
+////                return new MessageResponseDto("존재하지 않는 게시글입니다.", HttpStatus.FAILED_DEPENDENCY.value());
+//            return new MessageResponseDto("존재하지 않는 게시글입니다.", 400);
+//        }
         //앞에는 지금 로그인한 유저가 게시글 작성한 유저와 같은지 검사함
         //뒤에는 지금이 로그인한사람이 유저인지 관리자인지 검사함
-        if(user.getUsername().equals(post.get().getUsername()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
+        if(user.getUsername().equals(post.getUsername()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
             //포스트를 받은 데이터로 업데이트해줌
-            post.get().update(requestDto);
+            post.update(requestDto);
             return new MessageResponseDto("수정 성공", HttpStatus.OK.value());
         }
         return new MessageResponseDto("수정 실패.", 400);
@@ -157,15 +167,18 @@ public class PostService {
 //        if (user.isEmpty()) {
 //            return new MessageResponseDto("해당 게시글에 대한 권한이 없습니다.", 400);
 //        }
-        Optional<Post> post = postRepository.findById(id);
-        if (post.isEmpty()) {
-            return new MessageResponseDto("존재하지 않는 게시글입니다.", HttpStatus.FAILED_DEPENDENCY.value());
-        }
+        Post post = postRepository.findById(id).orElseThrow(
+                ()-> new IllegalArgumentException("이미 삭제된 게시글입니다.")
+        );
+//        Optional<Post> post = postRepository.findById(id);
+//        if (post.isEmpty()) {
+//            return new MessageResponseDto("존재하지 않는 게시글입니다.", HttpStatus.FAILED_DEPENDENCY.value());
+//        }
         //앞에는 지금 로그인한 유저가 게시글 작성한 유저와 같은지 검사함
         //뒤에는 지금이 로그인한사람이 유저인지 관리자인지 검사함
-        if (user.getUsername().equals(post.get().getUsername()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
+        if (user.getUsername().equals(post.getUsername()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
             //DB에서 삭제처리를 해줌
-            postRepository.delete(post.get());
+            postRepository.delete(post);
             return new MessageResponseDto("삭제 성공", HttpStatus.OK.value());
         }
 //            return new MsgResponseDto("삭제 성공", HttpStatus.OK.value());
