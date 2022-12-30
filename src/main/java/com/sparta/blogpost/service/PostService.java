@@ -23,10 +23,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
-
     private final CommentRepository commentRepository;
-    private final JwtUtil jwtUtil;
+
+//    private final UserRepository userRepository;
+//    private final JwtUtil jwtUtil;
 
     //1.게시글 생성
     @Transactional
@@ -44,6 +44,7 @@ public class PostService {
         //2개짜리는 주석처리중 입니다.
 //        Post post = new Post(requestDto, user.getUsername());
 //        post.addUser(users);
+//        user.addPost(post);
         //failed to lazily initialize a collection of role: could not initialize proxy - no Session
         postRepository.save(post);
         return new ResponseDto<>(new PostResponseDto(post));

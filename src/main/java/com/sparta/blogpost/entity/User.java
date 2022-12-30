@@ -4,11 +4,13 @@ import com.sparta.blogpost.enums.UserRoleEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @Entity(name = "users")
 public class User {
@@ -33,18 +35,25 @@ public class User {
     private UserRoleEnum role;
 
     @OneToMany(mappedBy = "users" , cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private final List<Post> posts = new ArrayList<>();
+    private List<Post> posts = new ArrayList<>();
     @OneToMany(mappedBy = "users" , cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private final List<Comment> commentList = new ArrayList<>();
+    private List<Comment> commentList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "users" , cascade = CascadeType.REMOVE)
+    private List<PostLike> postLike = new ArrayList<>();
+
+    @OneToMany(mappedBy = "users" , cascade = CascadeType.REMOVE)
+    private List<CommentLike> commentLike = new ArrayList<>();
+
+    public void addPost(Post post){
+        post.setUsers(this);
+        this.posts.add(post);
+    }
 
     public User(String username, String password,UserRoleEnum role) {
         this.username = username;
         this.password = password;
 //        this.email = email;
         this.role = role;
-    }
-    public void addUser(Post post){
-        this.posts.add(post);
     }
 }

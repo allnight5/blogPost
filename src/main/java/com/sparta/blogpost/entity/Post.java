@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Objects;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 public class Post extends Timestamped{
     @Id
@@ -29,6 +31,7 @@ public class Post extends Timestamped{
     @Column(nullable = false)
     private String content;
 
+    private Long likeCount;
     // @JsonIgnore 필드 레벨에서 무시 될 수 있는 속성
     // 데이터를 주고 받을 때 해당 데이터는 결과창에서 응답값에 보이지 않는다.
 //    @JsonIgnore
@@ -45,11 +48,21 @@ public class Post extends Timestamped{
     @OneToMany(mappedBy = "posts", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final List<Comment> commentList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "posts", cascade = CascadeType.REMOVE)
+    private final List<PostLike> postLikeList = new ArrayList<>();
+
     //게시글 참조하는 User관계 설정
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User users;
 
+
+    //양방향에 데이터를 저장해주기 위해서 사용한 메소드
+    //그런데 오류나서 죽여뒀다.
+    public void addUser(User user){
+        this.users =user;
+        users.getPosts().add(this);
+    }
     public Post(PostRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
@@ -74,12 +87,6 @@ public class Post extends Timestamped{
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
         this.username = username;
-    }
-    //양방향에 데이터를 저장해주기 위해서 사용한 메소드
-    //그런데 오류나서 죽여뒀다.
-    public void addUser(User user){
-        this.users = user;
-        users.getPosts().add(this);
     }
     public boolean isWriter(String username){
         if(Objects.equals(this.username, username)){

@@ -32,7 +32,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             //JwtUtil 클래스 메소드인 vaildateToken에서 토큰을 검사한다.
             //토큰에 문제가 있을때 if문을 실행시킨다.
             if(!jwtUtil.validateToken(token)){
-                jwtExceptionHandler(response, "Token Error", HttpStatus.UNAUTHORIZED.value());
+                jwtExceptionHandler(response, "토큰이 유효하지 않습니다", HttpStatus.UNAUTHORIZED.value());
                 return;
             }
             // 정보의 한 덩어리를 클레임(claim)이라고 부르며, 클레임은 key-value의 한 쌍으로 이루어져있습니다

@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -20,13 +22,14 @@ public class Comment extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "COMMENT_ID")
-    Long id;
+    private Long id;
 
     @Column(nullable = false)
-    String comment;
+    private String comment;
 
-    String username;
-
+    @Column(nullable = false)
+    private String username;
+    private Long likeCount;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User users;
@@ -34,6 +37,9 @@ public class Comment extends Timestamped{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "POST_ID")
     private Post posts;
+
+    @OneToMany(mappedBy = "comments", cascade =  CascadeType.REMOVE)
+    private final List<CommentLike> commentLikeList = new ArrayList<>();
 
     public Comment(CommentRequestDto requestDto, String username){
         this.comment = requestDto.getComment();
